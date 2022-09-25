@@ -156,6 +156,7 @@ const Container = styled.div`
           border-radius: 50px;
           padding: 3px;
           height: 4rem;
+          background-color: #f3f3f35c;
         }
       }
       .username {
@@ -194,6 +195,7 @@ const Container = styled.div`
           border-radius: 50px;
           padding: 3px;
           height: 4rem;
+          background-color: #f3f3f35c;
         }
       }
     }
@@ -234,6 +236,7 @@ const Container = styled.div`
         padding: 3px;
         height: 4rem;
         max-inline-size: 100%;
+        background-color: #f3f3f35c;
       }
     }
     .username {

@@ -17,6 +17,7 @@ function ChatContainer({ currentChat, currentUser, socket }) {
       to: currentChat._id,
       message: msg,
     });
+
     socket.current.emit("send-msg", {
       to: currentChat._id,
       from: currentUser._id,
@@ -121,6 +122,8 @@ const Container = Styled.div`
           border-radius: 50px;
           padding: 3px;
           height: 3rem;
+          background-color: #f3f3f35c;
+
         }
       }
       .username{
