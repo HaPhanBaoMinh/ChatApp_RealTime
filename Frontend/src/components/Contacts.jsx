@@ -1,12 +1,33 @@
 import React, { useEffect, useState } from "react";
-import Logo from "../assets/daadc760db9a01647758d2728f3a228d.png";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
+import { GoPrimitiveDot } from "react-icons/go";
+import { AiOutlineSetting } from "react-icons/ai";
+import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
+import "@szhsin/react-menu/dist/index.css";
+import { useNavigate } from "react-router-dom";
 
-export default function Contacts({ contacts, currentUser, handleChatChange }) {
+export default function Contacts({
+  contacts,
+  currentUser,
+  handleChatChange,
+  OnlineUser,
+  socket,
+}) {
   const [currentUserName, setcurrentUserName] = useState(undefined);
   const [currentUserImage, setcurrentUserImage] = useState(undefined);
   const [currentSelected, setcurrentSelected] = useState(undefined);
+
+  const navigate = useNavigate();
+  const handleClick = () => {
+    if (currentUser) {
+      localStorage.clear();
+      socket.current.emit("logout", {
+        _id: currentUser._id,
+      });
+      navigate("/login");
+    }
+  };
 
   const changeCurrentChat = (index, contact) => {
     setcurrentSelected(index);
@@ -44,6 +65,15 @@ export default function Contacts({ contacts, currentUser, handleChatChange }) {
                 <div className="username">
                   <h3> {contact.username} </h3>
                 </div>
+                {OnlineUser.includes(contact._id) ? (
+                  <h3 className="online">
+                    <GoPrimitiveDot /> <span>Online</span>
+                  </h3>
+                ) : (
+                  <h3 className="offline">
+                    <GoPrimitiveDot /> <span>Offline</span>
+                  </h3>
+                )}
               </div>
             );
           })}
@@ -56,6 +86,16 @@ export default function Contacts({ contacts, currentUser, handleChatChange }) {
           <div className="username">
             <h2> {currentUserName} </h2>
           </div>
+          <Menu
+            menuButton={
+              <MenuButton>
+                <AiOutlineSetting />
+              </MenuButton>
+            }
+          >
+            <MenuItem onClick={handleClick}>Logout</MenuItem>
+            <MenuItem>Setting</MenuItem>
+          </Menu>
         </div>
       </Container>
     )
@@ -88,7 +128,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     overflow: auto;
-    gap: 0.8rem;
+    gap: 1rem;
     &::-webkit-scrollbar {
       width: 0.1rem;
       background-color: #080420;
@@ -102,6 +142,7 @@ const Container = styled.div`
       background-color: #ffffff39;
       min-height: 5rem;
       width: 90%;
+      /* justify-content: space-around; */
       align-items: center;
       display: flex;
       gap: 1rem;
@@ -120,7 +161,28 @@ const Container = styled.div`
       .username {
         h3 {
           color: white;
+          margin-top: 7px;
         }
+      }
+      h3 {
+        font-size: 1rem;
+        margin-left: auto;
+        margin-right: 10px;
+        display: flex;
+        margin-top: 7px;
+        gap: 3px;
+      }
+      .online {
+        svg {
+          color: green;
+        }
+        color: #ffffff80;
+      }
+      .offline {
+        svg {
+          color: red;
+        }
+        color: #ffffff80;
       }
     }
     .selected {
@@ -141,8 +203,30 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 0.8rem;
     border-top: 1px solid #ffffff39;
+    button {
+      background-color: #3f3c5266;
+      border: none;
+      height: 2.5rem;
+      width: 2.4rem;
+      border-radius: 6px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 20px;
+      transition: 0.2s ease;
+
+      svg {
+        font-size: 21px;
+        color: #909090;
+      }
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+        transition: 0.2s ease;
+      }
+    }
     .avatar {
       img {
         border: 2px solid #4e0eff;

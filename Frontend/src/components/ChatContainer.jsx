@@ -4,7 +4,6 @@ import Styled from "styled-components";
 import loader from "../assets/Pulse-0.6s-173px.gif";
 import { getAllMessageRouter, sendMeesageRouter } from "../utils/APIRoutes";
 import ChatInput from "./ChatInput";
-import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
 
 function ChatContainer({ currentChat, currentUser, socket }) {
@@ -72,7 +71,6 @@ function ChatContainer({ currentChat, currentUser, socket }) {
                 <h3> {currentChat.username} </h3>
               </div>
             </div>
-            <Logout />
           </div>
           {/* <Message /> */}
           <div className="chat-message">

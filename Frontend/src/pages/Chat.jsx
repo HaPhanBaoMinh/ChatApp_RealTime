@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { allUserRouter, host } from "../utils/APIRoutes";
@@ -16,6 +15,7 @@ export default function Chat() {
   const [currentUser, setcurrentUser] = useState(undefined);
   const [currentChat, setcurrentChat] = useState(undefined);
   const [isLoaded, setIsloaded] = useState(false);
+  const [OnlineUser, setOnlineUser] = useState([]);
 
   const negative = useNavigate();
 
@@ -32,18 +32,24 @@ export default function Chat() {
 
   useEffect(() => {
     if (currentUser) {
-      socket.current = io(host);
+      socket.current = io(host, {
+        query: {
+          userId: currentUser._id,
+        },
+      });
       socket.current.emit("add-user", currentUser._id);
+      socket.current.on("online-user", (onlineList) => {
+        setOnlineUser(onlineList);
+      });
     }
+    getContact();
   }, [currentUser]);
+
+  // console.log(OnlineUser);
 
   const handleChatChange = (chat) => {
     setcurrentChat(chat);
   };
-
-  useEffect(() => {
-    getContact();
-  }, [currentUser]);
 
   useEffect(() => {
     if (!localStorage.getItem("chat-app-user")) {
@@ -60,6 +66,8 @@ export default function Chat() {
           contacts={contacts}
           currentUser={currentUser}
           handleChatChange={handleChatChange}
+          OnlineUser={OnlineUser}
+          socket={socket}
         />
         {isLoaded && !currentChat ? (
           <Welcome currentName={currentUser.username} />
@@ -81,12 +89,12 @@ const Container = styled.div`
   display: flex;
   gap: 1rem;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   background-color: #131313;
   .container {
-    height: 85vh;
-    width: 85vw;
+    height: 100vh;
+    width: 100vw;
     background-color: #00000076;
     display: grid;
     grid-template-columns: 25% 75%;

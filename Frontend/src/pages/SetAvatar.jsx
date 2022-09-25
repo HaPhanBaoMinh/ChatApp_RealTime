@@ -5,11 +5,9 @@ import loader from "../assets/Pulse-0.6s-173px.gif";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { setAvatarRoute } from "../utils/APIRoutes";
-import { Buffer } from "buffer";
 import { v4 as uuidv4 } from "uuid";
 
 export default function SetAvatar() {
-  const api = "https://api.multiavatar.com/45678945";
   const negative = useNavigate();
   const [avatars, setAvatars] = useState([]);
   const [isloading, setIsloading] = useState(true);
@@ -35,8 +33,8 @@ export default function SetAvatar() {
 
       if (data.status) {
         user.isAvatarImageSet = true;
-        user.avatarImage = data.image;
-        localStorage.setItem("chat-app-user", JSON.stringify(data.user));
+        user.avatarImage = data.user.avatarImage;
+        localStorage.setItem("chat-app-user", JSON.stringify(user));
         negative("/");
       } else {
         toast.error("Error setting avatar, Please try again", toastOption);

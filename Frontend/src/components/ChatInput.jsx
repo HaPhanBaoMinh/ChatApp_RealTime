@@ -56,7 +56,7 @@ const Container = styled.div`
   align-items: center;
   /* background-color: #080420; */
   padding: 0 2rem;
-  padding-bottom: 0.3rem;
+  padding-bottom: 0.9rem;
   .button-container {
     display: flex;
     align-items: center;

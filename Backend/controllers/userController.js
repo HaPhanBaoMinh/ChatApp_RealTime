@@ -44,7 +44,8 @@ module.exports.setAvatar = async (req, res, next) => {
     const { image } = req.body;
     const user = await UserModel.findOneAndUpdate(
       { _id },
-      { avatarImage: image, isAvatarImageSet: true }
+      { avatarImage: image, isAvatarImageSet: true },
+      { new: true }
     );
     return res.json({ status: true, user });
   } catch (error) {
