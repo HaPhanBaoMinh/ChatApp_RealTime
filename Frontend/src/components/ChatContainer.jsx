@@ -5,6 +5,9 @@ import loader from "../assets/Pulse-0.6s-173px.gif";
 import { getAllMessageRouter, sendMeesageRouter } from "../utils/APIRoutes";
 import ChatInput from "./ChatInput";
 import { v4 as uuidv4 } from "uuid";
+import { BsCameraVideoFill } from "react-icons/bs";
+import { IoCall } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 function ChatContainer({ currentChat, currentUser, socket }) {
   const [messages, setmessages] = useState([]);
@@ -72,11 +75,21 @@ function ChatContainer({ currentChat, currentUser, socket }) {
                 <h3> {currentChat.username} </h3>
               </div>
             </div>
+            <div className="videcall-action">
+              <Link target={"_blank"} to={`/videocall/${currentChat._id}`}>
+                <div>
+                  <IoCall />
+                </div>
+              </Link>
+              <div>
+                <BsCameraVideoFill />
+              </div>
+            </div>
           </div>
           {/* <Message /> */}
           <div className="chat-message">
             {messages &&
-              messages.map((msg, index) => {
+              messages.map((msg) => {
                 return (
                   <div ref={scrollRef} key={uuidv4()}>
                     <div
@@ -108,10 +121,33 @@ const Container = Styled.div`
     justify-content: center;
   .chat-header{
     border-bottom: 1px solid #ffffff39;
-    padding: 2px 10px;
+    padding: 2px 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .videcall-action{
+      font-size: 24px;
+      color: #9186f3;
+      display: flex;
+      gap: 1rem;
+      div {
+        width: 35px;
+        height: 35px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3px;
+        box-sizing: unset;
+        transition: 0.2s ease-in;
+
+        cursor: pointer;
+        &:hover{
+          background: #ffffff39;
+          transition: 0.2s ease-in;
+        }
+      }
+    }
     .user-details{
       display: flex;
       align-items: center;

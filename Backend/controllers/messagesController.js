@@ -17,6 +17,7 @@ module.exports.addMessage = async (req, res, next) => {
     next(error);
   }
 };
+
 module.exports.getAllMessage = async (req, res, next) => {
   try {
     const { from, to } = req.body;

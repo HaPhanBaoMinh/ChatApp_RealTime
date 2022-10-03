@@ -16,7 +16,7 @@ export default function Chat() {
   const [currentChat, setcurrentChat] = useState(undefined);
   const [isLoaded, setIsloaded] = useState(false);
   const [OnlineUser, setOnlineUser] = useState([]);
-
+  const [ErrorToConnect, setErrorToConnect] = useState(false);
   const negative = useNavigate();
 
   const getContact = async () => {
@@ -37,15 +37,19 @@ export default function Chat() {
           userId: currentUser._id,
         },
       });
+
       socket.current.emit("add-user", currentUser._id);
+
       socket.current.on("online-user", (onlineList) => {
         setOnlineUser(onlineList);
       });
+
+      socket.current.on("connect_error", () => setErrorToConnect(true));
+      socket.current.on("call-recieve", () => window.open("/answercall"));
+      // socket.current.on("call-recieve");
     }
     getContact();
   }, [currentUser]);
-
-  // console.log(OnlineUser);
 
   const handleChatChange = (chat) => {
     setcurrentChat(chat);
@@ -59,26 +63,31 @@ export default function Chat() {
       setIsloaded(true);
     }
   }, []);
+
   return (
     <Container>
-      <div className="container">
-        <Contacts
-          contacts={contacts}
-          currentUser={currentUser}
-          handleChatChange={handleChatChange}
-          OnlineUser={OnlineUser}
-          socket={socket}
-        />
-        {isLoaded && !currentChat ? (
-          <Welcome currentName={currentUser.username} />
-        ) : (
-          <ChatContainer
-            currentChat={currentChat}
+      {ErrorToConnect ? (
+        <h1>Error</h1>
+      ) : (
+        <div className="container">
+          <Contacts
+            contacts={contacts}
             currentUser={currentUser}
+            handleChatChange={handleChatChange}
+            OnlineUser={OnlineUser}
             socket={socket}
           />
-        )}
-      </div>
+          {isLoaded && !currentChat ? (
+            <Welcome currentName={currentUser.username} />
+          ) : (
+            <ChatContainer
+              currentChat={currentChat}
+              currentUser={currentUser}
+              socket={socket}
+            />
+          )}
+        </div>
+      )}
     </Container>
   );
 }

@@ -52,8 +52,6 @@ io.on("connection", (socket) => {
     onlines.push(newConnectUserId);
   }
 
-  // console.log(onlines);
-
   io.emit("online-user", onlines);
 
   socket.on("add-user", (userId) => {
@@ -83,8 +81,17 @@ io.on("connection", (socket) => {
     socket.disconnect();
   });
 
+  socket.on("make-call", (userBeCallId) => {
+    const sendUserSocket = onlineUsers.get(userBeCallId);
+    console.log(userBeCallId);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("call-recieve", "call-recieve");
+    }
+  });
+
   socket.on("send-msg", (data) => {
     const sendUserSocket = onlineUsers.get(data.to);
+
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit("msg-recieve", data.message);
     }
