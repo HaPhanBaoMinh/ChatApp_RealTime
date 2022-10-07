@@ -36,7 +36,11 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
   cors: {
-    origin: ["http://localhost:5000", "http://localhost:3000"],
+    origin: [
+      "http://localhost:5000",
+      "http://localhost:3000",
+      "https://chatapp-nine-beta.vercel.app",
+    ],
     // origin: "https://c720-113-161-66-58.ap.ngrok.io/",
     Credential: true,
   },
