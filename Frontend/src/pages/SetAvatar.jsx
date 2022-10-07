@@ -47,7 +47,7 @@ export default function SetAvatar() {
   const getRandomAvatars = async () => {
     const data = [];
     for (let i = 0; i < 4; i++) {
-      const image = `https://avatars.dicebear.com/api/micah/:${Math.round(
+      const image = await `https://avatars.dicebear.com/api/micah/:${Math.round(
         Math.random() * 1000
       )}.svg`;
       data.push(image);
@@ -73,25 +73,30 @@ export default function SetAvatar() {
             <h1>Pick an avater as your profile picture</h1>
           </div>
           <div className="avatars">
-            {avatars.map((avatar, index) => {
-              return (
-                <div
-                  key={uuidv4()}
-                  className={`avatar ${
-                    selectedAvatar === index ? "selected" : ""
-                  }`}
-                >
-                  <img
-                    src={avatar}
-                    alt="avatar"
-                    onClick={() => setSelectedAvatar(index)}
-                  />
-                </div>
-              );
-            })}
+            {avatars.length > 0 &&
+              avatars.map((avatar, index) => {
+                return (
+                  <div
+                    key={uuidv4()}
+                    className={`avatar ${
+                      selectedAvatar === index ? "selected" : ""
+                    }`}
+                  >
+                    <img
+                      src={avatar}
+                      alt="avatar"
+                      onClick={() => setSelectedAvatar(index)}
+                    />
+                  </div>
+                );
+              })}
           </div>
           <span>Reload to get new avatar</span>
-          <button className="submit-btn" onClick={() => setProfilePicture()}>
+          <button
+            className="submit-btn"
+            type="submit"
+            onClick={() => setProfilePicture()}
+          >
             Set as profile picture
           </button>
         </Container>

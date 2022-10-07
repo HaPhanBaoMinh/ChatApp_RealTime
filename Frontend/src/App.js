@@ -14,8 +14,8 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/setavatar" element={<SetAvatar />} />
-        <Route path="/videocall/:userid" element={<VideoCall />} />
-        <Route path="/answercall" element={<AnswerCall />} />
+        <Route path="/videocall/:calluserid" element={<VideoCall />} />
+        <Route path="/answercall/:answeruserid" element={<AnswerCall />} />
         <Route path="/" exact element={<Chat />} />
       </Routes>
     </BrowserRouter>

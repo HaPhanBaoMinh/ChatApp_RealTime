@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { MdCallEnd } from "react-icons/md";
 import { BsFillCameraVideoOffFill } from "react-icons/bs";
+import { IoMdCall } from "react-icons/io";
 import { IoMdMicOff } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
 import { Peer } from "peerjs";
@@ -11,17 +12,31 @@ import { io } from "socket.io-client";
 function AnswerCall() {
   const [currentUser, setcurrentUser] = useState(undefined);
   const [MyPeer, setMyPeer] = useState(undefined);
+  const [isTakeCall, setisTakeCall] = useState(false);
+  const [isEndCall, setisEndCall] = useState(false);
   const negative = useNavigate();
+  let { answeruserid } = useParams();
   const myVideo = document.getElementsByClassName("myVideo")[0];
   const currentVideoCall =
     document.getElementsByClassName("currentVideoCall")[0];
+  const takeCall = document.getElementsByClassName("takeCall")[0];
+  const socket = useRef();
 
   function addVideoStream(video, stream) {
-    video.srcObject = stream;
-    video.addEventListener("loadedmetadata", () => {
-      video.play();
-    });
+    if (video) {
+      video.srcObject = stream;
+      video.addEventListener("loadedmetadata", () => {
+        video.play();
+      });
+    }
   }
+
+  const handleEndCall = (MyPeer) => {
+    if (MyPeer) {
+      setisEndCall(true);
+      MyPeer.close();
+    }
+  };
 
   useEffect(() => {
     if (!localStorage.getItem("chat-app-user")) {
@@ -35,34 +50,69 @@ function AnswerCall() {
     if (currentUser) {
       setMyPeer(
         new Peer(currentUser._id, {
-          host: "localhost",
-          port: 3001,
-          path: "/",
+          host: "my-chat-app-incv.herokuapp.com",
+          port: 443,
+          secure: true,
         })
       );
+      socket.current = io(host, {
+        query: {
+          userId: currentUser._id,
+        },
+      });
     }
   }, [currentUser]);
 
-  useEffect(() => {
-    if (MyPeer) {
-      MyPeer.on("call", (call) => {
-        navigator.mediaDevices
-          .getUserMedia({
-            video: true,
-            audio: true,
-          })
-          .then((stream) => {
-            call.answer(stream);
-            addVideoStream(myVideo, stream);
-            myVideo.muted = true;
+  // useEffect(() => {
+  //   if (MyPeer) {
+  //     MyPeer.on("call", (call) => {
+  //       navigator.mediaDevices
+  //         .getUserMedia({
+  //           video: true,
+  //           audio: true,
+  //         })
+  //         .then((stream) => {
+  //           addVideoStream(myVideo, stream);
+  //           myVideo.muted = true;
+  //           call.answer(stream);
+  //           call.on("stream", (remoteStream) => {
+  //             addVideoStream(currentVideoCall, remoteStream);
+  //           });
+  //         });
+  //     });
+  //   }
+  // }, [MyPeer]);
 
-            call.on("stream", (remoteStream) => {
-              addVideoStream(currentVideoCall, remoteStream);
+  // useEffect(() => {
+  //   if (MyPeer) {
+  //     setisTakeCall(false);
+  //   }
+  // }, [MyPeer]);
+
+  if (MyPeer) {
+    MyPeer.on("open", (id) => {
+      console.log(id);
+      MyPeer.on("call", (call) => {
+        takeCall.addEventListener("click", () => {
+          setisTakeCall(true);
+
+          navigator.mediaDevices
+            .getUserMedia({
+              video: true,
+              audio: true,
+            })
+            .then((stream) => {
+              addVideoStream(myVideo, stream);
+              myVideo.muted = true;
+              call.answer(stream);
+              call.on("stream", (remoteStream) => {
+                addVideoStream(currentVideoCall, remoteStream);
+              });
             });
-          });
+        });
       });
-    }
-  }, [MyPeer]);
+    });
+  }
 
   return (
     <Container>
@@ -82,17 +132,43 @@ function AnswerCall() {
       <div className="videocall-content">
         <video className="myVideo"></video>
         <video className="currentVideoCall"></video>
+        {!isTakeCall && <h3>Calling...</h3>}
       </div>
       <div className="videocall-action">
-        <div className="offCam">
-          <BsFillCameraVideoOffFill />
-        </div>
-        <div className="endCall">
-          <MdCallEnd />
-        </div>
-        <div className="offMic">
-          <IoMdMicOff />
-        </div>
+        {isTakeCall ? (
+          <>
+            {isEndCall ? (
+              <h3>End call</h3>
+            ) : (
+              <>
+                <div className="offCam">
+                  <BsFillCameraVideoOffFill />
+                </div>
+                <div
+                  className="endCall"
+                  onClick={(event) => handleEndCall(event)}
+                >
+                  <MdCallEnd />
+                </div>
+                <div className="offMic">
+                  <IoMdMicOff />
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="endCall anwser">
+              <MdCallEnd />
+            </div>
+            <div
+              className="takeCall anwser"
+              onClick={() => setisTakeCall(true)}
+            >
+              <IoMdCall />
+            </div>
+          </>
+        )}
       </div>
     </Container>
   );
@@ -121,7 +197,12 @@ const Container = styled.div`
       width: 100%;
       height: 100%;
     }
+    h3 {
+      color: white;
+      position: absolute;
+    }
   }
+
   .videocall-header {
     background-color: #080420;
     display: flex;
@@ -153,6 +234,13 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     gap: 2rem;
+    h3 {
+      color: white;
+      position: absolute;
+      top: 50%;
+      right: calc(50% - 35px);
+      font-size: 35px;
+    }
     .endCall {
       height: 3.5rem;
       width: 3.5rem;
@@ -172,43 +260,66 @@ const Container = styled.div`
         color: white;
       }
     }
-    .offCam {
-      background-color: #9186f3;
-      height: 2.5rem;
-      width: 2.5rem;
+    .anwser {
+      margin: 0 30px;
+      margin-bottom: 20px;
+    }
+    .takeCall {
+      height: 3.5rem;
+      width: 3.5rem;
       border-radius: 50px;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
+      background-color: green;
       transition: 0.2s ease-in;
-      svg {
-        font-size: 20px;
-        color: white;
-      }
       &:hover {
         transition: 0.2s ease-in;
         opacity: 0.8;
+      }
+      svg {
+        font-size: 30px;
+        color: white;
       }
     }
-    .offMic {
-      background-color: #9186f3;
-      height: 2.5rem;
-      width: 2.5rem;
-      border-radius: 50px;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+  }
+  .offCam {
+    background-color: #9186f3;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s ease-in;
+    svg {
+      font-size: 20px;
+      color: white;
+    }
+    &:hover {
       transition: 0.2s ease-in;
-      svg {
-        font-size: 20px;
-        color: white;
-      }
-      &:hover {
-        transition: 0.2s ease-in;
-        opacity: 0.8;
-      }
+      opacity: 0.8;
+    }
+  }
+  .offMic {
+    background-color: #9186f3;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s ease-in;
+    svg {
+      font-size: 20px;
+      color: white;
+    }
+    &:hover {
+      transition: 0.2s ease-in;
+      opacity: 0.8;
     }
   }
 `;

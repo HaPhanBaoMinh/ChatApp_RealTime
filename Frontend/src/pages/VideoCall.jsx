@@ -10,9 +10,10 @@ import { io } from "socket.io-client";
 
 function VideoCall() {
   const [currentUser, setcurrentUser] = useState(undefined);
+  const [isEndCall, setisEndCall] = useState(false);
   const [MyPeer, setMyPeer] = useState(undefined);
   const negative = useNavigate();
-  let { userid } = useParams();
+  let { calluserid } = useParams();
   const myVideo = document.getElementsByClassName("myVideo")[0];
   const currentVideoCall =
     document.getElementsByClassName("currentVideoCall")[0];
@@ -24,6 +25,12 @@ function VideoCall() {
       video.play();
     });
   }
+
+  const handleEndCall = (MyPeer) => {
+    setisEndCall(true);
+    MyPeer.close();
+    // console.log(MyPeer);
+  };
 
   useEffect(() => {
     if (!localStorage.getItem("chat-app-user")) {
@@ -37,9 +44,9 @@ function VideoCall() {
     if (currentUser) {
       setMyPeer(
         new Peer(currentUser._id, {
-          host: "localhost",
-          port: 3001,
-          path: "/",
+          host: "my-chat-app-incv.herokuapp.com",
+          port: 443,
+          secure: true,
         })
       );
 
@@ -49,27 +56,37 @@ function VideoCall() {
         },
       });
 
-      socket.current.emit("make-call", userid);
+      socket.current.emit("make-call", calluserid, currentUser._id);
     }
   }, [currentUser]);
 
   useEffect(() => {
+    if (socket.current) {
+      socket.current.on("end-recieve", (currentUserId) => {
+        console.log(currentUserId);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     if (MyPeer) {
-      navigator.mediaDevices
-        .getUserMedia({
-          video: true,
-          audio: true,
-        })
-        .then((stream) => {
-          const call = MyPeer.call(userid, stream);
-          myVideo.muted = true;
-          addVideoStream(myVideo, stream);
-          if (call) {
-            call.on("stream", (remoteStream) => {
-              addVideoStream(currentVideoCall, remoteStream);
-            });
-          }
-        });
+      MyPeer.on("open", (id) => {
+        navigator.mediaDevices
+          .getUserMedia({
+            video: true,
+            audio: true,
+          })
+          .then((stream) => {
+            const call = MyPeer.call(calluserid, stream);
+            myVideo.muted = true;
+            addVideoStream(myVideo, stream);
+            if (call) {
+              call.on("stream", (remoteStream) => {
+                addVideoStream(currentVideoCall, remoteStream);
+              });
+            }
+          });
+      });
     }
   }, [MyPeer]);
 
@@ -90,19 +107,22 @@ function VideoCall() {
       </div>
       <div className="videocall-content">
         <video className="myVideo"></video>
+        {isEndCall && <h3>End call</h3>}
         <video className="currentVideoCall"></video>
       </div>
-      <div className="videocall-action">
-        <div className="offCam">
-          <BsFillCameraVideoOffFill />
+      {!isEndCall && (
+        <div className="videocall-action">
+          <div className="offCam">
+            <BsFillCameraVideoOffFill />
+          </div>
+          <div className="endCall" onClick={() => handleEndCall(MyPeer)}>
+            <MdCallEnd />
+          </div>
+          <div className="offMic">
+            <IoMdMicOff />
+          </div>
         </div>
-        <div className="endCall">
-          <MdCallEnd />
-        </div>
-        <div className="offMic">
-          <IoMdMicOff />
-        </div>
-      </div>
+      )}
     </Container>
   );
 }
@@ -114,6 +134,13 @@ const Container = styled.div`
   width: 100vw;
   overflow: auto;
   .videocall-content {
+    h3 {
+      color: white;
+      position: absolute;
+      top: 50%;
+      right: calc(50% - 35px);
+      font-size: 35px;
+    }
     .myVideo {
       width: 20vw;
       height: 20vh;

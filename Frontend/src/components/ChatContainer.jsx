@@ -78,12 +78,9 @@ function ChatContainer({ currentChat, currentUser, socket }) {
             <div className="videcall-action">
               <Link target={"_blank"} to={`/videocall/${currentChat._id}`}>
                 <div>
-                  <IoCall />
+                  <BsCameraVideoFill />
                 </div>
               </Link>
-              <div>
-                <BsCameraVideoFill />
-              </div>
             </div>
           </div>
           {/* <Message /> */}
@@ -126,6 +123,9 @@ const Container = Styled.div`
     align-items: center;
     justify-content: space-between;
     .videcall-action{
+      a{
+        color: #9186f3;
+      }
       font-size: 24px;
       color: #9186f3;
       display: flex;

@@ -10,8 +10,8 @@ const path = require("path");
 const app = express();
 require("dotenv").config();
 
-app.use(express.static(path.join(__dirname, "../Frontend/build")));
 app.use(cors());
+app.use(express.static(path.join(__dirname, "../Frontend/build")));
 app.use(express.json());
 app.use(morgan("tiny"));
 
@@ -36,7 +36,8 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:5000", "http://localhost:3000"],
+    // origin: "https://c720-113-161-66-58.ap.ngrok.io/",
     Credential: true,
   },
 });
@@ -81,13 +82,19 @@ io.on("connection", (socket) => {
     socket.disconnect();
   });
 
-  socket.on("make-call", (userBeCallId) => {
+  socket.on("make-call", (userBeCallId, currentUserId) => {
     const sendUserSocket = onlineUsers.get(userBeCallId);
-    console.log(userBeCallId);
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("call-recieve", "call-recieve");
+      socket.to(sendUserSocket).emit("call-recieve", currentUserId);
     }
   });
+
+  // socket.on("end-call", (userBeCallId) => {
+  //   const sendToUserSocket = onlineUsers.get(userBeCallId);
+  //   if (sendToUserSocket) {
+  //     io.to(sendToUserSocket).emit("end-recieve", userBeCallId);
+  //   }
+  // });
 
   socket.on("send-msg", (data) => {
     const sendUserSocket = onlineUsers.get(data.to);

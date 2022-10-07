@@ -45,7 +45,9 @@ export default function Chat() {
       });
 
       socket.current.on("connect_error", () => setErrorToConnect(true));
-      socket.current.on("call-recieve", () => window.open("/answercall"));
+      socket.current.on("call-recieve", (answerUserId) =>
+        window.open(`/answercall/${answerUserId}`)
+      );
       // socket.current.on("call-recieve");
     }
     getContact();
