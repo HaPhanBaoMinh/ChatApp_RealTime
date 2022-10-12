@@ -112,14 +112,8 @@ function VideoCall() {
       </div>
       {!isEndCall && (
         <div className="videocall-action">
-          <div className="offCam">
-            <BsFillCameraVideoOffFill />
-          </div>
           <div className="endCall" onClick={() => handleEndCall(MyPeer)}>
             <MdCallEnd />
-          </div>
-          <div className="offMic">
-            <IoMdMicOff />
           </div>
         </div>
       )}

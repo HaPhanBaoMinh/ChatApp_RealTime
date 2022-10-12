@@ -63,32 +63,6 @@ function AnswerCall() {
     }
   }, [currentUser]);
 
-  // useEffect(() => {
-  //   if (MyPeer) {
-  //     MyPeer.on("call", (call) => {
-  //       navigator.mediaDevices
-  //         .getUserMedia({
-  //           video: true,
-  //           audio: true,
-  //         })
-  //         .then((stream) => {
-  //           addVideoStream(myVideo, stream);
-  //           myVideo.muted = true;
-  //           call.answer(stream);
-  //           call.on("stream", (remoteStream) => {
-  //             addVideoStream(currentVideoCall, remoteStream);
-  //           });
-  //         });
-  //     });
-  //   }
-  // }, [MyPeer]);
-
-  // useEffect(() => {
-  //   if (MyPeer) {
-  //     setisTakeCall(false);
-  //   }
-  // }, [MyPeer]);
-
   if (MyPeer) {
     MyPeer.on("open", (id) => {
       console.log(id);
@@ -141,17 +115,11 @@ function AnswerCall() {
               <h3>End call</h3>
             ) : (
               <>
-                <div className="offCam">
-                  <BsFillCameraVideoOffFill />
-                </div>
                 <div
                   className="endCall"
                   onClick={(event) => handleEndCall(event)}
                 >
                   <MdCallEnd />
-                </div>
-                <div className="offMic">
-                  <IoMdMicOff />
                 </div>
               </>
             )}
