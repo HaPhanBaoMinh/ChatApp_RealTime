@@ -36,7 +36,7 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
   cors: {
-    origin: ["https://chatapprealtime.vercel.app", "http://localhost:3000"],
+    origin: ["https://chatapp-realtime.onrender.com", "http://localhost:3000"],
     Credential: true,
   },
 });
