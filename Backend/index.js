@@ -11,16 +11,16 @@ const app = express();
 require("dotenv").config();
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, "./build")));
+// app.use(express.static(path.join(__dirname, "./build")));
 app.use(express.json());
 app.use(morgan("tiny"));
 
 app.use("/api/auth", userRoutes);
 app.use("/api/messages", messagesRoutes);
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "./build", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "./build", "index.html"));
+// });
 
 mongoose
   .connect(process.env.MONGO_URL, {
