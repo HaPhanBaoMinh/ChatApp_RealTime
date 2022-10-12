@@ -26,10 +26,8 @@ function VideoCall() {
     });
   }
 
-  const handleEndCall = (MyPeer) => {
-    setisEndCall(true);
-    MyPeer.close();
-    // console.log(MyPeer);
+  const handleEndCall = () => {
+    window.close();
   };
 
   useEffect(() => {
@@ -112,7 +110,7 @@ function VideoCall() {
       </div>
       {!isEndCall && (
         <div className="videocall-action">
-          <div className="endCall" onClick={() => handleEndCall(MyPeer)}>
+          <div className="endCall" onClick={handleEndCall}>
             <MdCallEnd />
           </div>
         </div>

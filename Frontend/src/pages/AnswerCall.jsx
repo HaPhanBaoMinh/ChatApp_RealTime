@@ -31,11 +31,8 @@ function AnswerCall() {
     }
   }
 
-  const handleEndCall = (MyPeer) => {
-    if (MyPeer) {
-      setisEndCall(true);
-      MyPeer.close();
-    }
+  const handleEndCall = () => {
+    window.close();
   };
 
   useEffect(() => {
@@ -115,10 +112,7 @@ function AnswerCall() {
               <h3>End call</h3>
             ) : (
               <>
-                <div
-                  className="endCall"
-                  onClick={(event) => handleEndCall(event)}
-                >
+                <div className="endCall" onClick={handleEndCall}>
                   <MdCallEnd />
                 </div>
               </>
