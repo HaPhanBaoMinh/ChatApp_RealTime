@@ -15,8 +15,6 @@ app.use(express.static(path.join(__dirname, "./build")));
 app.use(express.json());
 app.use(morgan("tiny"));
 
-app.use("/getdemo", (req, res) => res.send("oke"));
-
 app.use("/api/auth", userRoutes);
 app.use("/api/messages", messagesRoutes);
 
