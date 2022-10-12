@@ -41,7 +41,6 @@ const io = socket(server, {
       "http://localhost:3000",
       "https://chatapp-nine-beta.vercel.app",
     ],
-    // origin: "https://c720-113-161-66-58.ap.ngrok.io/",
     Credential: true,
   },
 });

@@ -122,6 +122,12 @@ const Container = styled.div`
       color: white;
       text-transform: uppercase;
     }
+    @media screen and (max-width: 720px) {
+      height: 15%;
+      h1 {
+        font-size: 20px;
+      }
+    }
   }
   .contacts {
     display: flex;
@@ -138,6 +144,9 @@ const Container = styled.div`
         border-radius: 10px;
       }
     }
+    @media screen and (max-width: 720px) {
+      height: 75%;
+    }
     .contact {
       background-color: #ffffff39;
       min-height: 5rem;
@@ -150,6 +159,27 @@ const Container = styled.div`
       transition: 0.2s ease-in;
       border-radius: 0.2rem;
       cursor: pointer;
+
+      @media screen and (max-width: 721px) {
+        padding-left: 0;
+        width: 100%;
+        .username {
+          display: none;
+        }
+        .online {
+          display: none;
+        }
+        .offline {
+          display: none;
+        }
+        .brand {
+          height: 10%;
+          h1 {
+            font-size: 20px;
+          }
+        }
+      }
+
       .avatar {
         img {
           border: 2px solid #080420;
@@ -160,11 +190,13 @@ const Container = styled.div`
         }
       }
       .username {
+        min-width: 85px;
         h3 {
           color: white;
           margin-top: 7px;
         }
       }
+
       h3 {
         font-size: 1rem;
         margin-left: auto;
@@ -207,6 +239,23 @@ const Container = styled.div`
     align-items: center;
     gap: 0.8rem;
     border-top: 1px solid #ffffff39;
+    @media screen and (max-width: 720px) {
+      height: 10%;
+      gap: 0;
+      .avatar {
+        display: none;
+      }
+      .username {
+        text-align: center;
+        h2 {
+          font-size: 14px;
+          overflow-wrap: break-word;
+        }
+      }
+      .szh-menu-button {
+        display: none;
+      }
+    }
     button {
       background-color: #3f3c5266;
       border: none;
@@ -240,6 +289,7 @@ const Container = styled.div`
       }
     }
     .username {
+      min-width: 85px;
       h2 {
         color: white;
       }
@@ -252,5 +302,31 @@ const Container = styled.div`
         }
       }
     }
+  }
+  @media screen and (min-width: 700px) and (max-width: 880px) {
+    .online {
+      svg {
+        color: green;
+      }
+      color: #ffffff80;
+      span {
+        display: none;
+      }
+    }
+    .offline {
+      svg {
+        color: red;
+      }
+      span {
+        display: none;
+      }
+      color: #ffffff80;
+    }
+  }
+  @media screen and (max-width: 721px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    justify-content: center;
   }
 `;

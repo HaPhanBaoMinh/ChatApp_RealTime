@@ -109,8 +109,11 @@ const Container = styled.div`
     background-color: #00000076;
     display: grid;
     grid-template-columns: 25% 75%;
-    @media screen and (min-width: 720px) and (max-width: 1080px) {
+    @media screen and (min-width: 720px) and (max-width: 1130px) {
       grid-template-columns: 35% 65%;
+    }
+    @media screen and (max-width: 721px) {
+      grid-template-columns: 10% 90%;
     }
   }
 `;

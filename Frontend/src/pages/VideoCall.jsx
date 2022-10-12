@@ -175,6 +175,7 @@ const Container = styled.div`
         }
       }
       .username {
+        min-width: 85px;
         h3 {
           color: white;
         }
