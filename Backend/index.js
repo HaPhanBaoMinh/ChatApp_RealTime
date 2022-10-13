@@ -88,13 +88,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // socket.on("end-call", (userBeCallId) => {
-  //   const sendToUserSocket = onlineUsers.get(userBeCallId);
-  //   if (sendToUserSocket) {
-  //     io.to(sendToUserSocket).emit("end-recieve", userBeCallId);
-  //   }
-  // });
-
   socket.on("send-msg", (data) => {
     const sendUserSocket = onlineUsers.get(data.to);
 
