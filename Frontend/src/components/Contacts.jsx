@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
-import { GoPrimitiveDot } from "react-icons/go";
+import { GoDotFill } from "react-icons/go";
 import { AiOutlineSetting } from "react-icons/ai";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
@@ -67,11 +67,11 @@ export default function Contacts({
                 </div>
                 {OnlineUser.includes(contact._id) ? (
                   <h3 className="online">
-                    <GoPrimitiveDot /> <span>Online</span>
+                    <GoDotFill /> <span>Online</span>
                   </h3>
                 ) : (
                   <h3 className="offline">
-                    <GoPrimitiveDot /> <span>Offline</span>
+                    <GoDotFill /> <span>Offline</span>
                   </h3>
                 )}
               </div>
