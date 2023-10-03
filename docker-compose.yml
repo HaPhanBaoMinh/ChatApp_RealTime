@@ -25,7 +25,7 @@ services:
     build: ./frontend
     container_name: frontend-chat-app
     ports:
-      - 4005:3000
+      - 4005:80
     environment:
       - REACT_APP_HOST=http://localhost:5005
     
