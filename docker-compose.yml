@@ -1,0 +1,31 @@
+version: '1.0'
+
+services:
+  db: 
+    image: mongo:6.0
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - 27019:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: baominh
+      MONGO_INITDB_ROOT_PASSWORD: 1292002
+  
+  backend:
+    build: ./backend
+    container_name: backend-chat-app
+    ports:
+      - 5005:5000
+    environment:
+      - MONGO_URL=mongodb://baominh:1292002@db:27017
+      - PORT=5000
+      - FRONTEND_HOST=http://localhost:4005
+  
+  frontend:
+    build: ./frontend
+    container_name: frontend-chat-app
+    ports:
+      - 4005:3000
+    environment:
+      - REACT_APP_HOST=http://localhost:5005
+    

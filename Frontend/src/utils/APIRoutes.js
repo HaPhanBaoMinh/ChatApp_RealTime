@@ -1,5 +1,4 @@
-export const host = "http://localhost:5001";
-// export const host = "https://chatapp-realtime.onrender.com";
+export const host = process.env.REACT_APP_HOST || "http://localhost:5000";
 export const registerRoute = `${host}/api/auth/register`;
 export const loginRoute = `${host}/api/auth/login`;
 export const setAvatarRoute = `${host}/api/auth/setAvatar`;
